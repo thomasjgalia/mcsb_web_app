@@ -1,4 +1,4 @@
-# Medical Code Set Builder - Oracle Cloud Edition
+# Medical Code Set Builder 
 
 A web-based OMOP vocabulary code set builder with a shopping cart workflow. Search medical concepts, explore hierarchies, and generate comprehensive code sets across multiple vocabularies.
 
