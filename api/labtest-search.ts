@@ -78,14 +78,7 @@ function loadRollups() {
     systemRollups = JSON.parse(
       readFileSync(join(basePath, 'rollup_system.json'), 'utf-8')
     );
-
-    console.log('✓ Loaded lab attribute rollups:', {
-      scale: scaleRollups?.length,
-      time: timeRollups?.length,
-      system: systemRollups?.length
-    });
   } catch (error) {
-    console.error('Failed to load rollup files:', error);
     // Set to empty arrays to prevent retry
     scaleRollups = [];
     timeRollups = [];
@@ -95,17 +88,27 @@ function loadRollups() {
 
 // Apply rollups to a single result
 function applyRollups(result: LabTestSearchResult): LabTestSearchResult {
+  // Normalize values for case-insensitive matching
+  const scaleNormalized = result.scale?.trim().toLowerCase();
+  const timeNormalized = result.time?.trim().toLowerCase();
+  const systemNormalized = result.system?.trim().toLowerCase();
+
+  // Find rollup matches
+  const scaleRollup = scaleNormalized
+    ? scaleRollups?.find(r => r.raw_value.trim().toLowerCase() === scaleNormalized)
+    : null;
+  const timeRollup = timeNormalized
+    ? timeRollups?.find(r => r.raw_value.trim().toLowerCase() === timeNormalized)
+    : null;
+  const systemRollup = systemNormalized
+    ? systemRollups?.find(r => r.raw_value.trim().toLowerCase() === systemNormalized)
+    : null;
+
   return {
     ...result,
-    scale: result.scale
-      ? scaleRollups?.find(r => r.raw_value === result.scale)?.label || result.scale
-      : result.scale,
-    time: result.time
-      ? timeRollups?.find(r => r.raw_value === result.time)?.time_bucket || result.time
-      : result.time,
-    system: result.system
-      ? systemRollups?.find(r => r.raw_value === result.system)?.label || result.system
-      : result.system,
+    scale: scaleRollup?.label || result.scale,
+    time: timeRollup?.time_bucket || result.time,
+    system: systemRollup?.label || result.system,
   };
 }
 
@@ -245,7 +248,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Apply rollups to transform raw attribute values
     const rolledUpResults = results.map(applyRollups);
 
-    console.log('📤 Sending lab test search response with', rolledUpResults.length, 'results (with rollups applied)');
+    console.log('📤 Sending lab test search response with', rolledUpResults.length, 'results');
     return res.status(200).json({
       success: true,
       data: rolledUpResults,
