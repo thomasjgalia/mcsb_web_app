@@ -162,7 +162,7 @@ export default function Step3CodeSet({
           }));
 
       // Save the code set
-      const saveResult = await saveCodeSet(session.user.id, {
+      await saveCodeSet(session.user.id, {
         code_set_name: name,
         description: description || `Saved on ${new Date().toLocaleDateString()}`,
         concepts: conceptsToSave,
