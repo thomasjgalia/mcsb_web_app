@@ -27,6 +27,10 @@ async function getPool(): Promise<sql.ConnectionPool> {
       trustServerCertificate: true, // Required for Azure SQL with mssql library
       connectTimeout: 300000, // 5 minutes to allow for Azure SQL auto-resume from pause
       requestTimeout: 300000, // 5 minutes for query execution
+      // Match SSMS default SET options to use cached execution plans
+      // This is critical for performance - different SET options cause plan recompilation
+      enableArithAbort: true,
+      abortTransactionOnError: true,
     },
     pool: {
       max: 10,
@@ -102,9 +106,14 @@ export async function executeStoredProcedure<T>(
   tvpParams?: { name: string; typeName: string; rows: any[][] }
 ): Promise<T[]> {
   try {
+    const startTime = Date.now();
     console.log(`📊 Executing stored procedure: ${procedureName}`);
 
+    const poolStart = Date.now();
     const pool = await getPool();
+    console.log(`⏱️  Pool acquired in ${Date.now() - poolStart}ms`);
+
+    const requestStart = Date.now();
     const request = pool.request();
 
     // Add regular parameters
@@ -137,8 +146,13 @@ export async function executeStoredProcedure<T>(
       request.input(tvpParams.name, table);
     }
 
+    console.log(`⏱️  Request prepared in ${Date.now() - requestStart}ms`);
+
+    const executeStart = Date.now();
     const result = await request.execute(procedureName);
+    console.log(`⏱️  Stored procedure executed in ${Date.now() - executeStart}ms`);
     console.log(`✅ Stored procedure returned ${result.recordset.length} rows`);
+    console.log(`⏱️  TOTAL TIME: ${Date.now() - startTime}ms`);
 
     return result.recordset as T[];
   } catch (error) {

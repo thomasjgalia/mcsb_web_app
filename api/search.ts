@@ -49,6 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    const apiStartTime = Date.now();
     const { searchterm, domain_id } = req.body as SearchRequest;
     console.log('Search params:', { searchterm, domain_id });
 
@@ -70,6 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (useStoredProcs) {
       // NEW PATH: Use stored procedure
       console.log('🚀 Search: Using stored procedure');
+      const spStartTime = Date.now();
       try {
         results = await executeStoredProcedure<SearchResult>(
           'dbo.sp_SearchConcepts',
@@ -78,6 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             DomainId: domain_id,
           }
         );
+        console.log(`⏱️  Stored procedure call completed in ${Date.now() - spStartTime}ms`);
       } catch (error) {
         console.error('Stored procedure failed, falling back to dynamic queries:', error);
         // Fall through to dynamic query path
@@ -229,6 +232,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     console.log('📤 Sending response with', results.length, 'results');
+    console.log(`⏱️  TOTAL API TIME: ${Date.now() - apiStartTime}ms`);
     return res.status(200).json({
       success: true,
       data: results,
