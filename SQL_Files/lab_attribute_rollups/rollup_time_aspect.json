@@ -1,112 +1,342 @@
 [
   {
     "attribute": "Has time aspect",
-    "raw_value": "*",
-    "time_bucket": "Unspecified / Other"
+    "raw_value": "24H^median",
+    "time_bucket": "24h"
   },
   {
     "attribute": "Has time aspect",
-    "raw_value": "-",
-    "time_bucket": "Unspecified / Other"
+    "raw_value": "XXX^min",
+    "time_bucket": "XXX"
   },
   {
     "attribute": "Has time aspect",
-    "raw_value": "1 hour",
-    "time_bucket": "Short duration"
+    "raw_value": "1Mo^mean",
+    "time_bucket": "Multi-day"
   },
   {
     "attribute": "Has time aspect",
-    "raw_value": "10 hours",
-    "time_bucket": "Day-based duration"
+    "raw_value": "Enctr^frst",
+    "time_bucket": "Context"
   },
   {
     "attribute": "Has time aspect",
-    "raw_value": "12 hours",
-    "time_bucket": "Day-based duration"
+    "raw_value": "Episode",
+    "time_bucket": "Context"
   },
   {
     "attribute": "Has time aspect",
-    "raw_value": "18 hours",
-    "time_bucket": "Day-based duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "2 hours",
-    "time_bucket": "Short duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "24 hours",
-    "time_bucket": "Day-based duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "3 hours",
-    "time_bucket": "Short duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "4 hours",
-    "time_bucket": "Short duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "48 hours",
-    "time_bucket": "Multi-day duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "5 hours",
-    "time_bucket": "Short duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "6 hours",
-    "time_bucket": "Short duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "72 hours",
-    "time_bucket": "Multi-day duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "8 hours",
-    "time_bucket": "Day-based duration"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "Point in time (spot)",
-    "time_bucket": "Point in time"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "Reporting Period",
-    "time_bucket": "Study / Reporting Period"
-  },
-  {
-    "attribute": "Has time aspect",
-    "raw_value": "RptPeriod^mean",
-    "time_bucket": "Study / Reporting Period"
+    "raw_value": "6 minutes",
+    "time_bucket": "<8h"
   },
   {
     "attribute": "Has time aspect",
     "raw_value": "Stdy^max",
-    "time_bucket": "Study / Reporting Period"
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "8Hmin",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "4 hours",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "72 hours",
+    "time_bucket": "Multi-day"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Procedure",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "12H^min",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Daily",
+    "time_bucket": "Context - Daily"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "10H^mean",
+    "time_bucket": "8-23h"
   },
   {
     "attribute": "Has time aspect",
     "raw_value": "Stdy^mean",
-    "time_bucket": "Study / Reporting Period"
+    "time_bucket": "Context"
   },
   {
     "attribute": "Has time aspect",
-    "raw_value": "Study",
-    "time_bucket": "Study / Reporting Period"
+    "raw_value": "10M^mean",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "12H^max",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "6 hours",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1W^mean",
+    "time_bucket": "Multi-day"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "24H^max",
+    "time_bucket": "24h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "8H^mean",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "24H^mean",
+    "time_bucket": "24h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "24 hours",
+    "time_bucket": "24h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "12H^mean",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Episode^frst",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1H^max",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1 week",
+    "time_bucket": "Multi-day"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Point in time (spot)",
+    "time_bucket": "Spot"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Enctr^max",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "100ms",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "10 hours",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "8Hmax",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1 hour",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Stdy^total",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1M^mean",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1 minute",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Reporting Period^max",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "48 hours",
+    "time_bucket": "Multi-day"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1H^mean",
+    "time_bucket": "<8h"
   },
   {
     "attribute": "Has time aspect",
     "raw_value": "Unspecified",
-    "time_bucket": "Unspecified / Other"
+    "time_bucket": "Other"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "24H^min",
+    "time_bucket": "24h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "8 hours",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1W^max",
+    "time_bucket": "Multi-day"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "10H^max",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Stdy^min",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Reporting Period",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "5 hours",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "RptPeriod^mean",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "10H^min",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Night time",
+    "time_bucket": "Context - Night"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Study",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "2 minutes",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "3 hours",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "3 weeks",
+    "time_bucket": "Multi-day"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Surgery",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "-",
+    "time_bucket": "Other"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Procedure duration",
+    "time_bucket": "Context"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "4 weeks",
+    "time_bucket": "Multi-day"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "1H^min",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Single point in time",
+    "time_bucket": "Spot"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Daytime",
+    "time_bucket": "Context - Daytime"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "12 hours",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "2 hours",
+    "time_bucket": "<8h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "18 hours",
+    "time_bucket": "8-23h"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "XXX^mean",
+    "time_bucket": "XXX"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "*",
+    "time_bucket": "Other"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "XXX^max",
+    "time_bucket": "XXX"
+  },
+  {
+    "attribute": "Has time aspect",
+    "raw_value": "Lifetime",
+    "time_bucket": "Multi-day"
   }
 ]

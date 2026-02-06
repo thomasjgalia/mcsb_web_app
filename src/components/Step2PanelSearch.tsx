@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, AlertCircle, ShoppingCart, ArrowLeft, ExternalLink, PackageCheck } from 'lucide-react';
+import { Loader2, AlertCircle, ShoppingCart, ArrowLeft, ExternalLink, PackageCheck, ChevronRight, ChevronDown } from 'lucide-react';
 import { searchLabTestPanels } from '../lib/api';
 import type { LabTestPanelSearchResult, CartItem } from '../lib/types';
 
@@ -21,6 +21,7 @@ export default function Step2PanelSearch({
   const [results, setResults] = useState<LabTestPanelSearchResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedLabTests, setExpandedLabTests] = useState<Set<number>>(new Set());
 
   // Get lab test concept IDs from shopping cart
   const labTestConceptIds = shoppingCart.map(item => item.hierarchy_concept_id);
@@ -50,6 +51,52 @@ export default function Step2PanelSearch({
 
     loadPanels();
   }, [labTestConceptIds.length]); // Re-run when lab tests are added/removed
+
+  // Group results by lab test
+  const groupedResults = useMemo(() => {
+    const groups = new Map<number, {
+      labTest: LabTestPanelSearchResult;
+      panels: LabTestPanelSearchResult[];
+    }>();
+
+    results.forEach((result) => {
+      const labTestId = result.std_concept_id;
+
+      if (result.lab_test_type === 'Lab Test') {
+        // Initialize group for this lab test
+        if (!groups.has(labTestId)) {
+          groups.set(labTestId, {
+            labTest: result,
+            panels: []
+          });
+        }
+      } else if (result.lab_test_type === 'Panel') {
+        // Add panel to its lab test group
+        const group = groups.get(labTestId);
+        if (group) {
+          group.panels.push(result);
+        }
+      }
+    });
+
+    return Array.from(groups.values());
+  }, [results]);
+
+  // Toggle collapse state for a lab test
+  const toggleLabTest = (labTestId: number) => {
+    const newExpanded = new Set(expandedLabTests);
+    if (newExpanded.has(labTestId)) {
+      newExpanded.delete(labTestId);
+    } else {
+      newExpanded.add(labTestId);
+    }
+    setExpandedLabTests(newExpanded);
+  };
+
+  // Check if a lab test is expanded
+  const isExpanded = (labTestId: number): boolean => {
+    return expandedLabTests.has(labTestId);
+  };
 
   // Check if a panel is in the cart
   const isInCart = (panelId: number): boolean => {
@@ -162,7 +209,7 @@ export default function Step2PanelSearch({
       )}
 
       {/* Results */}
-      {!loading && !error && results.length === 0 && (
+      {!loading && !error && groupedResults.length === 0 && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
           <div className="flex items-start gap-3">
             <AlertCircle className="text-yellow-600 flex-shrink-0" size={24} />
@@ -177,95 +224,114 @@ export default function Step2PanelSearch({
         </div>
       )}
 
-      {!loading && !error && results.length > 0 && (
-        <div className="space-y-4">
+      {!loading && !error && groupedResults.length > 0 && (
+        <div className="space-y-3">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-900">
               Lab Tests and Their Panels
             </h2>
+            <span className="text-sm text-gray-600">
+              {groupedResults.reduce((sum, group) => sum + group.panels.length, 0)} panel{groupedResults.reduce((sum, group) => sum + group.panels.length, 0) !== 1 ? 's' : ''} available
+            </span>
           </div>
 
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Code
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Vocabulary
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {results.map((result, index) => (
-                  <tr
-                    key={`${result.panel_concept_id}-${index}`}
-                    className={`hover:bg-gray-50 ${result.lab_test_type === 'Lab Test' ? 'bg-gray-100' : ''}`}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        result.lab_test_type === 'Lab Test'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {result.lab_test_type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-900">
-                          {result.search_result}
-                        </span>
-                        <a
-                          href={`https://athena.ohdsi.org/search-terms/terms/${result.panel_concept_id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800"
-                          title="View in OHDSI Athena"
-                        >
-                          <ExternalLink size={16} />
-                        </a>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-900">{result.searched_code}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-900">{result.vocabulary_id}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      {result.lab_test_type === 'Panel' ? (
-                        <button
-                          onClick={() => handleAddToCart(result)}
-                          className={`text-xs px-2 py-1 whitespace-nowrap flex items-center gap-1 justify-end ml-auto ${
-                            isInCart(result.panel_concept_id)
-                              ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                              : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                          }`}
-                          title={isInCart(result.panel_concept_id) ? 'Click to remove from cart' : 'Add to cart'}
-                        >
-                          <ShoppingCart className="w-3 h-3" />
-                          {isInCart(result.panel_concept_id) ? 'In Cart' : 'Add'}
-                        </button>
-                      ) : (
-                        <span className="text-xs text-gray-400">Already in cart</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {groupedResults.map((group) => (
+            <div key={group.labTest.std_concept_id} className="bg-white shadow rounded-lg">
+              {/* Lab Test Header (Collapsible Parent Row) */}
+              <button
+                onClick={() => toggleLabTest(group.labTest.std_concept_id)}
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-colors rounded-lg"
+              >
+                {isExpanded(group.labTest.std_concept_id) ? (
+                  <ChevronDown className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                )}
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Lab Test
+                </span>
+                <span className="flex-1 text-left">{group.labTest.search_result}</span>
+                <a
+                  href={`https://athena.ohdsi.org/search-terms/terms/${group.labTest.panel_concept_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800"
+                  title="View in OHDSI Athena"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ExternalLink size={16} />
+                </a>
+                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                  {group.panels.length} panel{group.panels.length !== 1 ? 's' : ''}
+                </span>
+              </button>
+
+              {/* Panels Table (Child Rows - Collapsed by default) */}
+              {isExpanded(group.labTest.std_concept_id) && group.panels.length > 0 && (
+                <div className="border-t border-gray-200">
+                  <div className="px-4 pb-3">
+                    <table className="table w-full mt-2">
+                      <thead>
+                        <tr>
+                          <th>Panel Name</th>
+                          <th>Code</th>
+                          <th>Vocabulary</th>
+                          <th className="text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.panels.map((panel) => (
+                          <tr key={panel.panel_concept_id}>
+                            <td>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm">{panel.search_result}</span>
+                                <a
+                                  href={`https://athena.ohdsi.org/search-terms/terms/${panel.panel_concept_id}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blue-800"
+                                  title="View in OHDSI Athena"
+                                >
+                                  <ExternalLink size={16} />
+                                </a>
+                              </div>
+                            </td>
+                            <td className="whitespace-nowrap">
+                              <span className="text-sm">{panel.searched_code}</span>
+                            </td>
+                            <td className="whitespace-nowrap">
+                              <span className="text-sm">{panel.vocabulary_id}</span>
+                            </td>
+                            <td className="whitespace-nowrap text-right">
+                              <button
+                                onClick={() => handleAddToCart(panel)}
+                                className={`text-xs px-2 py-1 rounded whitespace-nowrap flex items-center gap-1 justify-end ml-auto ${
+                                  isInCart(panel.panel_concept_id)
+                                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                }`}
+                                title={isInCart(panel.panel_concept_id) ? 'Click to remove from cart' : 'Add to cart'}
+                              >
+                                <ShoppingCart className="w-3 h-3" />
+                                {isInCart(panel.panel_concept_id) ? 'In Cart' : 'Add'}
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* No Panels Message */}
+              {isExpanded(group.labTest.std_concept_id) && group.panels.length === 0 && (
+                <div className="border-t border-gray-200 px-4 py-3">
+                  <p className="text-sm text-gray-500 italic">No panels contain this lab test</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
 

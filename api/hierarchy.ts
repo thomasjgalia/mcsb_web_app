@@ -37,10 +37,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { concept_id } = req.body as HierarchyRequest;
+    const { concept_id: rawConceptId } = req.body as HierarchyRequest;
 
-    // Validate input
-    if (!concept_id || typeof concept_id !== 'number') {
+    // Convert to number if it's a string, and validate
+    const concept_id = typeof rawConceptId === 'string' ? parseInt(rawConceptId, 10) : rawConceptId;
+
+    if (!concept_id || typeof concept_id !== 'number' || isNaN(concept_id)) {
       return res.status(400).json({
         success: false,
         error: 'Valid concept ID is required',
