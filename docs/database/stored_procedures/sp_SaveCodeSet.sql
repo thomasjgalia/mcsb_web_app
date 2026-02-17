@@ -14,7 +14,7 @@ END
 GO
 
 CREATE PROCEDURE dbo.sp_SaveCodeSet
-    @supabase_user_id UNIQUEIDENTIFIER,
+    @user_id NVARCHAR(128),
     @code_set_name NVARCHAR(200),
     @description NVARCHAR(MAX) = NULL,
     @concepts NVARCHAR(MAX),
@@ -33,7 +33,7 @@ BEGIN
 
     -- Insert the code set
     INSERT INTO saved_code_sets (
-        supabase_user_id,
+        user_id,
         code_set_name,
         description,
         concepts,
@@ -46,7 +46,7 @@ BEGIN
         is_materialized
     )
     VALUES (
-        @supabase_user_id,
+        @user_id,
         @code_set_name,
         @description,
         @concepts,

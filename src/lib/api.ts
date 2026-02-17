@@ -2,7 +2,6 @@
 // API Client for Oracle OMOP Queries
 // ============================================================================
 import axios, { AxiosError } from 'axios';
-import { supabase } from './supabase';
 import type {
   SearchRequest,
   SearchResult,
@@ -35,16 +34,8 @@ const apiClient = axios.create({
   timeout: 300000, // 5 minutes timeout to match backend and health check
 });
 
-// Add request interceptor to include JWT token
-apiClient.interceptors.request.use(async (config) => {
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (session?.access_token) {
-    config.headers.Authorization = `Bearer ${session.access_token}`;
-  }
-
-  return config;
-});
+// SWA automatically injects the user identity into API requests via headers.
+// No Authorization token injection needed.
 
 // ============================================================================
 // Error Handling
@@ -274,7 +265,7 @@ export const upsertUserProfile = async (
   try {
     const response = await apiClient.post<ApiResponse<UserProfile>>(
       '/api/user/profile',
-      { supabase_user_id: userId, email, display_name: displayName }
+      { user_id: userId, email, display_name: displayName }
     );
 
     if (!response.data.success || !response.data.data) {
@@ -317,7 +308,7 @@ export const saveCodeSet = async (
   try {
     const response = await apiClient.post<ApiResponse<{ id: number }>>(
       '/api/user/codesets',
-      { supabase_user_id: userId, ...request }
+      { user_id: userId, ...request }
     );
 
     if (!response.data.success || !response.data.data) {
@@ -408,7 +399,7 @@ export const trackSearch = async (
 ): Promise<void> => {
   try {
     await apiClient.post('/api/user/search-history', {
-      supabase_user_id: userId,
+      user_id: userId,
       search_term: searchTerm,
       domain_type: domainType,
       result_count: resultCount,

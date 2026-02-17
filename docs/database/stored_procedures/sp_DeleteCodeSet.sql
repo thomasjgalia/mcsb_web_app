@@ -14,7 +14,7 @@ GO
 
 CREATE PROCEDURE dbo.sp_DeleteCodeSet
     @id INT,
-    @supabase_user_id UNIQUEIDENTIFIER
+    @user_id NVARCHAR(128)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -24,7 +24,7 @@ BEGIN
     -- Delete with authorization check
     DELETE FROM saved_code_sets
     WHERE id = @id
-      AND LOWER(CAST(supabase_user_id AS NVARCHAR(36))) = LOWER(CAST(@supabase_user_id AS NVARCHAR(36)));
+      AND user_id = @user_id;
 
     SET @RowsAffected = @@ROWCOUNT;
 

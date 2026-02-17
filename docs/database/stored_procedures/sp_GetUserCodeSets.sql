@@ -13,7 +13,7 @@ END
 GO
 
 CREATE PROCEDURE dbo.sp_GetUserCodeSets
-    @supabase_user_id UNIQUEIDENTIFIER
+    @user_id NVARCHAR(128)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -30,7 +30,7 @@ BEGIN
         created_at,
         updated_at
     FROM saved_code_sets
-    WHERE supabase_user_id = @supabase_user_id
+    WHERE user_id = @user_id
     ORDER BY created_at DESC;
 END;
 GO

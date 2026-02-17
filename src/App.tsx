@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { supabase } from './lib/supabase';
+import { getUser, signIn, signOut, type ClientPrincipal } from './lib/auth';
 import { upsertUserProfile, testConnection } from './lib/api';
-import type { User } from '@supabase/supabase-js';
 import type { CartItem, SearchResult, DomainType } from './lib/types';
 
 // Components (will be created next)
@@ -15,13 +14,12 @@ import Step2PanelSearch from './components/Step2PanelSearch';
 import Step2Hierarchy from './components/Step2Hierarchy';
 import Step3CodeSet from './components/Step3CodeSet';
 import SavedCodeSets from './components/SavedCodeSets';
-import AuthPage from './components/AuthPage';
 import DirectionsModal from './components/DirectionsModal';
 
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<ClientPrincipal | null>(null);
   const [loading, setLoading] = useState(true);
   const [dbConnectionStatus, setDbConnectionStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
   const [dbErrorMessage, setDbErrorMessage] = useState<string>('');
@@ -39,54 +37,23 @@ function AppContent() {
   const [lastSearchTerm, setLastSearchTerm] = useState('');
   const [lastSearchDomain, setLastSearchDomain] = useState<DomainType | ''>('');
 
-  // Check if auth is disabled for local development
-  const authDisabled = import.meta.env.VITE_DISABLE_AUTH === 'true';
-
-  // Check for existing session on mount
+  // Check for existing session on mount via SWA /.auth/me
   useEffect(() => {
-    // Skip auth check if disabled
-    if (authDisabled) {
-      setUser({ id: 'local-dev', email: 'dev@local.test' } as User);
-      setLoading(false);
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    getUser().then((principal) => {
+      if (!principal) {
+        // Not authenticated — redirect to Microsoft login
+        signIn();
+        return;
+      }
+      setUser(principal);
       setLoading(false);
 
-      // Create/update user profile on login
-      if (session?.user) {
-        upsertUserProfile(
-          session.user.id,
-          session.user.email!,
-          session.user.user_metadata?.display_name
-        ).catch(() => {
-          // Silently handle error
-        });
-      }
+      // Create/update user profile in Azure SQL on login
+      upsertUserProfile(principal.userId, principal.userDetails, undefined).catch(() => {
+        // Silently handle error
+      });
     });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-
-      // Create/update user profile on auth state change
-      if (session?.user) {
-        upsertUserProfile(
-          session.user.id,
-          session.user.email!,
-          session.user.user_metadata?.display_name
-        ).catch(() => {
-          // Silently handle error
-        });
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [authDisabled]);
+  }, []);
 
   // Check database connection once on app startup
   useEffect(() => {
@@ -192,11 +159,6 @@ function AppContent() {
     );
   }
 
-  // If not authenticated, show auth page
-  if (!user) {
-    return <AuthPage />;
-  }
-
   return (
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
@@ -221,9 +183,9 @@ function AppContent() {
                 >
                   How to Use
                 </button>
-                <span className="text-xs text-gray-600">{user.email}</span>
+                <span className="text-xs text-gray-600">{user.userDetails}</span>
                 <button
-                  onClick={() => supabase.auth.signOut()}
+                  onClick={() => signOut()}
                   className="btn-secondary text-xs px-3 py-1.5"
                 >
                   Sign Out

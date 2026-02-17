@@ -14,7 +14,7 @@ GO
 
 CREATE PROCEDURE dbo.sp_GetCodeSetDetail
     @id INT,
-    @supabase_user_id UNIQUEIDENTIFIER
+    @user_id NVARCHAR(128)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -22,7 +22,7 @@ BEGIN
     -- Get code set with authorization check
     SELECT
         id,
-        supabase_user_id,
+        user_id,
         code_set_name,
         description,
         concepts,
@@ -37,7 +37,7 @@ BEGIN
         updated_at
     FROM saved_code_sets
     WHERE id = @id
-      AND LOWER(CAST(supabase_user_id AS NVARCHAR(36))) = LOWER(CAST(@supabase_user_id AS NVARCHAR(36)));
+      AND user_id = @user_id;
 
     -- Note: Returns empty result set if not found or unauthorized
     -- Application layer should handle 404/403 responses appropriately
