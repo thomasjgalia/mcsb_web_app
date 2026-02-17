@@ -29,20 +29,8 @@ dist-ssr
 .env.local
 .env.production
 
-# Oracle Wallet (NEVER COMMIT!)
-**/wallet/
-**/Wallet_*/
-*.sso
-*.p12
-cwallet.sso
-ewallet.p12
-tnsnames.ora
-sqlnet.ora
-
-# Vercel
-.vercel
+# Azure Functions local settings (contains secrets)
+local.settings.json
 
 # Build outputs
 *.tsbuildinfo
-
-.vercel
