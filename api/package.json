@@ -10,11 +10,9 @@
   },
   "dependencies": {
     "@azure/functions": "^4.5.0",
-    "mssql": "^12.2.0"
-  },
-  "devDependencies": {
     "@types/mssql": "^9.1.9",
     "@types/node": "^20.0.0",
+    "mssql": "^12.2.0",
     "typescript": "^5.4.0"
   },
   "engines": {
