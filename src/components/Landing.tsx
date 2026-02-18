@@ -11,15 +11,12 @@ export default function Landing({ onSelectWorkflow, connectionStatus, errorMessa
   return (
     <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4">
       <div className="max-w-4xl w-full">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <p className="text-lg text-gray-600">
+        {/* Header + Connection Status */}
+        <div className="text-center mb-6">
+          <p className="text-lg text-gray-600 mb-3">
             What type of code set are you building?
           </p>
-        </div>
-
-        {/* Connection Status */}
-        <div className="mb-8">
+        <div>
           {connectionStatus === 'connecting' && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto">
               <div className="flex items-center justify-center gap-2 mb-2">
@@ -46,6 +43,7 @@ export default function Landing({ onSelectWorkflow, connectionStatus, errorMessa
               <p className="text-xs text-center text-red-700">{errorMessage}</p>
             </div>
           )}
+        </div>
         </div>
 
         {/* Workflow Selection Cards */}
