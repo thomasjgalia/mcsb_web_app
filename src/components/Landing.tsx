@@ -13,9 +13,6 @@ export default function Landing({ onSelectWorkflow, connectionStatus, errorMessa
       <div className="max-w-4xl w-full">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Medical Code Set Builder
-          </h1>
           <p className="text-lg text-gray-600">
             What type of code set are you building?
           </p>

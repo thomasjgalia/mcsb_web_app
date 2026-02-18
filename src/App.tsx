@@ -165,7 +165,8 @@ function AppContent() {
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
             <div className="flex justify-between items-center">
-              <div>
+              <div className="flex items-center gap-2">
+                <img src="/turnstone.g.png" alt="Turnstone" className="h-8 w-auto" />
                 <h1 className="text-lg font-bold text-gray-900">
                   Medical Code Set Builder
                 </h1>
@@ -175,15 +176,9 @@ function AppContent() {
                   onClick={() => navigate('/saved')}
                   className="btn-secondary text-xs px-3 py-1.5"
                 >
-                  My Saved Code Sets
+                  Saved Code Sets
                 </button>
-                <button
-                  onClick={() => setIsDirectionsOpen(true)}
-                  className="btn-secondary text-xs px-3 py-1.5"
-                >
-                  How to Use
-                </button>
-                <span className="text-xs text-gray-600">{user.userDetails}</span>
+<span className="text-xs text-gray-600">{user.userDetails}</span>
                 <button
                   onClick={() => signOut()}
                   className="btn-secondary text-xs px-3 py-1.5"
@@ -370,7 +365,7 @@ function AppContent() {
         <footer className="bg-white border-t border-gray-200 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <p className="text-center text-sm text-gray-500">
-              Medical Code Set Builder | Built with React + Azure SQL Server + OMOP Vocabulary
+              Medical Code Set Builder | Powered by Turnstone LTD + OMOP Vocabulary
             </p>
           </div>
         </footer>
