@@ -9,6 +9,39 @@ import sql from 'mssql';
 // Connection pool (reused across function invocations)
 let pool: sql.ConnectionPool | null = null;
 
+// Azure SQL Serverless auto-resume error codes
+// These are returned immediately when the DB is paused — connectTimeout does not apply
+const AZURE_SQL_RESUMING_ERRORS = new Set([
+  40613, // Database not currently available — most common auto-resume error
+  40197, // Service encountered an error processing your request
+  40501, // Service is currently busy
+  49918, // Cannot process request — not enough resources
+]);
+
+const RETRY_DELAY_MS = 5000;       // 5 seconds between retries
+const MAX_RETRY_ATTEMPTS = 36;     // 36 × 5s = 3 minutes max wait
+
+async function connectWithRetry(config: sql.config): Promise<sql.ConnectionPool> {
+  for (let attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt++) {
+    try {
+      return await sql.connect(config);
+    } catch (error: any) {
+      const isResuming =
+        AZURE_SQL_RESUMING_ERRORS.has(error?.number) ||
+        (error?.message || '').toLowerCase().includes('not currently available');
+
+      if (isResuming && attempt < MAX_RETRY_ATTEMPTS) {
+        console.log(`⏳ Azure SQL is resuming from pause, retry ${attempt}/${MAX_RETRY_ATTEMPTS} in ${RETRY_DELAY_MS / 1000}s...`);
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+        continue;
+      }
+
+      throw error;
+    }
+  }
+  throw new Error('Database connection failed: timed out waiting for Azure SQL to resume');
+}
+
 /**
  * Get or create Azure SQL connection pool
  */
@@ -47,7 +80,7 @@ async function getPool(): Promise<sql.ConnectionPool> {
   });
 
   try {
-    pool = await sql.connect(config);
+    pool = await connectWithRetry(config);
     console.log('✅ Azure SQL connection pool created');
     return pool;
   } catch (error) {
