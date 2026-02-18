@@ -3,7 +3,6 @@ import { Search, X, Loader2, BookOpen, Copy, Check, ExternalLink, Save, CheckCir
 // ARCHIVED: API endpoint moved to api/archived/umls-search.ts
 // import { searchUMLS, saveCodeSet } from '../lib/api';
 import { saveCodeSet } from '../lib/api';
-import { supabase } from '../lib/supabase';
 import SaveCodeSetModal from './SaveCodeSetModal';
 import type { UMLSSearchResult, SavedUMLSConcept, UMLSCodeSetMetadata } from '../lib/types';
 
@@ -108,19 +107,6 @@ export default function UMLSSearch() {
     setSaveSuccess(false);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session?.user) {
-        throw new Error('Not authenticated');
-      }
-
-      console.log('💾 Saving UMLS code set:', {
-        userId: session.user.id,
-        name,
-        description,
-        resultCount: results.length,
-      });
-
       // Convert UMLS results to saveable format
       const umlsConcepts: SavedUMLSConcept[] = results.flatMap(result =>
         result.sources?.map(source => ({
@@ -139,7 +125,7 @@ export default function UMLSSearch() {
         saved_at: new Date().toISOString()
       };
 
-      const result = await saveCodeSet(session.user.id, {
+      const result = await saveCodeSet({
         code_set_name: name,
         description: description || `UMLS search for "${searchTerm}" saved on ${new Date().toLocaleDateString()}`,
         concepts: umlsConcepts,

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Download, Trash2, Eye, RefreshCw, Edit, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSavedCodeSets, getCodeSetDetail, deleteCodeSet } from '../lib/api';
-import { supabase } from '../lib/supabase';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
 import type { GetCodeSetsResponse, GetCodeSetDetailResponse, SavedCodeSetConcept, SavedUMLSConcept } from '../lib/types';
 import type { CartItem } from '../lib/types';
@@ -27,14 +26,7 @@ export default function SavedCodeSets() {
   const loadCodeSets = async () => {
     setLoading(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        console.error('❌ No user session found');
-        return;
-      }
-
-      console.log('📋 Loading code sets for user:', session.user.id);
-      const sets = await getSavedCodeSets(session.user.id);
+      const sets = await getSavedCodeSets();
       console.log('✅ Loaded code sets:', sets.length, sets);
       setCodeSets(sets);
     } catch (error) {

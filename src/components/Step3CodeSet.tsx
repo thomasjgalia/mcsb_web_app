@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { PackageCheck, Loader2, AlertCircle, Download, Copy, CheckCircle, RotateCcw, ArrowLeft, Plus, ChevronDown, ChevronRight, Save, X } from 'lucide-react';
 import { buildCodeSet, exportToTxt, exportToSql, saveCodeSet } from '../lib/api';
-import { supabase } from '../lib/supabase';
 import SaveCodeSetModal from './SaveCodeSetModal';
 import type { CartItem, CodeSetResult, ComboFilter } from '../lib/types';
 
@@ -130,12 +129,6 @@ export default function Step3CodeSet({
     setSaveSuccess(false);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session?.user) {
-        throw new Error('Not authenticated');
-      }
-
       // Hybrid approach: For large code sets (>=500), save only anchor concepts
       // For small code sets, save all built concepts
       const LARGE_CODESET_THRESHOLD = 500;
@@ -162,7 +155,7 @@ export default function Step3CodeSet({
           }));
 
       // Save the code set
-      await saveCodeSet(session.user.id, {
+      await saveCodeSet({
         code_set_name: name,
         description: description || `Saved on ${new Date().toLocaleDateString()}`,
         concepts: conceptsToSave,

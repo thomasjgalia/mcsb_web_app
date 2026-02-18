@@ -302,13 +302,12 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
  * Save a code set
  */
 export const saveCodeSet = async (
-  userId: string,
   request: SaveCodeSetRequest
 ): Promise<{ id: number }> => {
   try {
     const response = await apiClient.post<ApiResponse<{ id: number }>>(
       '/api/user/codesets',
-      { user_id: userId, ...request }
+      request
     );
 
     if (!response.data.success || !response.data.data) {
@@ -324,11 +323,9 @@ export const saveCodeSet = async (
 /**
  * Get user's saved code sets (metadata only)
  */
-export const getSavedCodeSets = async (
-  userId: string
-): Promise<GetCodeSetsResponse[]> => {
+export const getSavedCodeSets = async (): Promise<GetCodeSetsResponse[]> => {
   try {
-    console.log('📡 API: Requesting saved code sets for userId:', userId);
+    console.log('📡 API: Requesting saved code sets');
     // Don't pass userId in URL - the API will use the authenticated user's ID
     const response = await apiClient.get<ApiResponse<GetCodeSetsResponse[]>>(
       '/api/user/codesets'
@@ -392,14 +389,12 @@ export const deleteCodeSet = async (codeSetId: number): Promise<boolean> => {
  * Track a search in history
  */
 export const trackSearch = async (
-  userId: string,
   searchTerm: string,
   domainType?: string,
   resultCount?: number
 ): Promise<void> => {
   try {
     await apiClient.post('/api/user/search-history', {
-      user_id: userId,
       search_term: searchTerm,
       domain_type: domainType,
       result_count: resultCount,

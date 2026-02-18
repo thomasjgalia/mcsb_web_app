@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Loader2, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown, ShoppingCart, GitBranch, PackageCheck } from 'lucide-react';
 import { searchConcepts, trackSearch } from '../lib/api';
-import { supabase } from '../lib/supabase';
 import type { DomainType, SearchResult, CartItem } from '../lib/types';
 import termSuggestions from '../../SQL_Files/termsuggest.json';
 
@@ -146,13 +145,10 @@ export default function Step1Search({
       setLastSearchDomain(domain as DomainType);
 
       // Track search in history (fire and forget)
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        trackSearch(session.user.id, searchTerm.trim(), domain as DomainType, data.length)
-          .catch(() => {
-            // Silently fail if tracking errors occur
-          });
-      }
+      trackSearch(searchTerm.trim(), domain as DomainType, data.length)
+        .catch(() => {
+          // Silently fail if tracking errors occur
+        });
 
       if (data.length === 0) {
         setError('No results found. Try a different search term or domain.');

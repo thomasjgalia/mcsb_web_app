@@ -156,7 +156,7 @@ export interface ApiError {
 // Azure SQL User Data Types
 // ============================================================================
 export interface UserProfile {
-  supabase_user_id: string;
+  user_id: string;
   email: string;
   display_name?: string;
   preferences?: string; // JSON string
@@ -173,7 +173,7 @@ export interface UserPreferences {
 
 export interface SavedCodeSetRecord {
   id: number;
-  supabase_user_id: string;
+  user_id: string;
   code_set_name: string;
   description?: string;
   concepts: string; // JSON string
@@ -195,7 +195,7 @@ export interface SavedCodeSetConcept {
 
 export interface SearchHistoryRecord {
   id: number;
-  supabase_user_id: string;
+  user_id: string;
   search_term: string;
   domain_type?: string;
   result_count?: number;

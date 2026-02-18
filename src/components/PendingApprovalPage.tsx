@@ -1,5 +1,5 @@
 import { Clock, Mail, LogOut } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { signOut } from '../lib/auth';
 
 interface PendingApprovalPageProps {
   email: string;
@@ -7,7 +7,7 @@ interface PendingApprovalPageProps {
 
 export default function PendingApprovalPage({ email }: PendingApprovalPageProps) {
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await signOut();
   };
 
   const isVeradigmEmail = email.endsWith('@veradigm.me');
