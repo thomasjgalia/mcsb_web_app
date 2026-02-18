@@ -32,19 +32,22 @@ jobs:
                const coredemo = require('@actions/core')
                return await coredemo.getIDToken()
            result-encoding: string
-      # Pre-build frontend so Oryx doesn't need devDependencies (vite, tsc)
       - name: Install frontend dependencies
         run: npm ci
       - name: Build frontend
         run: npx vite build
+      # Copy SWA config into dist so it is included in the deployed content
+      - name: Copy staticwebapp.config.json to dist
+        run: cp staticwebapp.config.json dist/
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_MANGO_SMOKE_0B2D1E81E }}
           action: "upload"
-          app_location: "/"
-          output_location: "dist"
+          app_location: "dist"
+          api_location: "api"
+          output_location: ""
           skip_app_build: true
           github_id_token: ${{ steps.idtoken.outputs.result }}
 

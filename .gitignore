@@ -34,3 +34,5 @@ local.settings.json
 
 # Build outputs
 *.tsbuildinfo
+vite.config.js
+vite.config.d.ts

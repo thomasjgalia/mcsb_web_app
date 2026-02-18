@@ -427,38 +427,3 @@ export const getSearchHistory = async (
   }
 };
 
-// ============================================================================
-// OpenAI Chat Assistant (ARCHIVED - API endpoint moved to api/archived/)
-// ============================================================================
-// export interface ChatMessage {
-//   role: 'system' | 'user' | 'assistant';
-//   content: string;
-// }
-
-// export interface ChatResponse {
-//   message: string;
-//   usage?: {
-//     prompt_tokens: number;
-//     completion_tokens: number;
-//     total_tokens: number;
-//   };
-// }
-
-// /**
-//  * Send a message to the OpenAI chat assistant
-//  */
-// export const sendChatMessage = async (
-//   messages: ChatMessage[]
-// ): Promise<string> => {
-//   const response = await apiClient.post<ApiResponse<ChatResponse>>(
-//     '/api/chat',
-//     { messages }
-//   );
-
-//   if (!response.data.success || !response.data.data) {
-//     throw new Error('Invalid chat response');
-//   }
-
-//   return response.data.data.message;
-// };
-
