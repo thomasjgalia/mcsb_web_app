@@ -259,38 +259,6 @@ export interface GetCodeSetDetailResponse extends GetCodeSetsResponse {
 }
 
 // ============================================================================
-// UMLS Search Types
-// ============================================================================
-export interface UMLSSearchRequest {
-  searchTerm: string;
-  vocabularies?: string[]; // Optional filter: ICD10CM, CPT, SNOMEDCT_US, etc.
-  pageSize?: number;
-}
-
-export interface UMLSSourceAtom {
-  code: string;
-  sourceConcept: string;
-  vocabulary: string;
-  term: string;
-}
-
-export interface UMLSSearchResult {
-  ui: string; // Concept Unique Identifier (CUI)
-  name: string; // Preferred term
-  uri: string; // Concept URI
-  rootSource: string; // Source vocabulary
-  semanticTypes?: string[]; // Semantic type abbreviations
-  sources?: UMLSSourceAtom[]; // Codes from different vocabularies
-}
-
-export interface UMLSSearchResponse {
-  results: UMLSSearchResult[];
-  pageCount: number;
-  pageNumber: number;
-  ticket?: string; // Service ticket for authenticated UMLS links
-}
-
-// ============================================================================
 // Application State Types
 // ============================================================================
 export interface AppState {

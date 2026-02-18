@@ -1,7 +1,6 @@
 import { Search, GitBranch, PackageCheck, ChevronRight, ShoppingCart, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 // import AIChatAssistant from './AIChatAssistant';
-// import UMLSSearch from './UMLSSearch';
 
 interface NavigationProps {
   currentStep: 0 | 1 | 2 | 3;

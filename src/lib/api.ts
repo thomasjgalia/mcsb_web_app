@@ -15,8 +15,6 @@ import type {
   GetCodeSetsResponse,
   GetCodeSetDetailResponse,
   SearchHistoryRecord,
-  // UMLSSearchRequest, // Archived
-  // UMLSSearchResponse, // Archived
   LabTestSearchRequest,
   LabTestSearchResult,
   LabTestPanelSearchResult,
@@ -464,28 +462,3 @@ export const getSearchHistory = async (
 //   return response.data.data.message;
 // };
 
-// ============================================================================
-// UMLS Search (ARCHIVED - API endpoint moved to api/archived/)
-// ============================================================================
-
-// /**
-//  * Search UMLS (Unified Medical Language System) for medical terms
-//  */
-// export const searchUMLS = async (
-//   request: UMLSSearchRequest
-// ): Promise<UMLSSearchResponse> => {
-//   try {
-//     const response = await apiClient.post<ApiResponse<UMLSSearchResponse>>(
-//       '/api/umls-search',
-//       request
-//     );
-
-//     if (!response.data.success || !response.data.data) {
-//       throw new Error(response.data.error || 'UMLS search failed');
-//     }
-
-//     return response.data.data;
-//   } catch (error) {
-//     return handleApiError(error);
-//   }
-// };
