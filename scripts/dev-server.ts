@@ -102,7 +102,6 @@ app.listen(PORT, () => {
   console.log('  AZURE_SQL_PASSWORD:', process.env.AZURE_SQL_PASSWORD ? '✓ Set' : '✗ Not set');
   console.log('  AZURE_SQL_CONNECTION_STRING:', process.env.AZURE_SQL_CONNECTION_STRING ? '✓ Set' : '✗ Not set');
   console.log('  SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? '✓ Set' : '✗ Not set');
-  console.log('  OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? '✓ Set' : '✗ Not set');
   console.log('  UMLS_API_KEY:', process.env.UMLS_API_KEY ? '✓ Set' : '✗ Not set');
   console.log('\n');
 });
