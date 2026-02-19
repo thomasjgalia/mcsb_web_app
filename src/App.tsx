@@ -49,9 +49,15 @@ function AppContent() {
       setLoading(false);
 
       // Create/update user profile in Azure SQL on login
-      upsertUserProfile(principal.userId, principal.userDetails, undefined).catch((err) => {
-        console.error('Failed to create/update user profile:', err);
+      console.log('[Auth] Creating profile for:', {
+        provider: principal.identityProvider,
+        userId: principal.userId,
+        email: principal.userDetails,
+        roles: principal.userRoles,
       });
+      upsertUserProfile(principal.userId, principal.userDetails, undefined)
+        .then(() => console.log('[Auth] Profile upserted successfully'))
+        .catch((err) => console.error('[Auth] Failed to create/update user profile:', err));
     });
   }, []);
 
