@@ -16,7 +16,7 @@ export async function getUser(): Promise<ClientPrincipal | null> {
 }
 
 export function signIn() {
-  window.location.href = '/.auth/login/aad'
+  window.location.href = '/.auth/login/aad?prompt=select_account'
 }
 
 export function signOut() {
