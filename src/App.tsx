@@ -40,23 +40,13 @@ function AppContent() {
   // Check for existing session on mount via SWA /.auth/me
   useEffect(() => {
     getUser().then((principal) => {
-      if (!principal) {
-        // Not authenticated — redirect to Microsoft login
-        signIn();
-        return;
-      }
-      setUser(principal);
       setLoading(false);
+      if (!principal) return; // Not authenticated — login screen will render
+
+      setUser(principal);
 
       // Create/update user profile in Azure SQL on login
-      console.log('[Auth] Creating profile for:', {
-        provider: principal.identityProvider,
-        userId: principal.userId,
-        email: principal.userDetails,
-        roles: principal.userRoles,
-      });
       upsertUserProfile(principal.userId, principal.userDetails, undefined)
-        .then(() => console.log('[Auth] Profile upserted successfully'))
         .catch((err) => console.error('[Auth] Failed to create/update user profile:', err));
     });
   }, []);
@@ -160,6 +150,23 @@ function AppContent() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center space-y-6">
+          <div className="flex items-center justify-center gap-3">
+            <img src="/turnstone.g.png" alt="Turnstone" className="h-12 w-auto" />
+            <h1 className="text-2xl font-bold text-gray-900">Medical Code Set Builder</h1>
+          </div>
+          <p className="text-gray-500">Sign in to access the application</p>
+          <button onClick={signIn} className="btn-primary px-6 py-2">
+            Sign in with Microsoft
+          </button>
         </div>
       </div>
     );

@@ -5,17 +5,5 @@
   },
   "platform": {
     "apiRuntime": "node:20"
-  },
-  "routes": [
-    {
-      "route": "/*",
-      "allowedRoles": ["authenticated"]
-    }
-  ],
-  "responseOverrides": {
-    "401": {
-      "redirect": "/.auth/login/aad?prompt=select_account",
-      "statusCode": 302
-    }
   }
 }

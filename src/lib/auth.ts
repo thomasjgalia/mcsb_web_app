@@ -20,8 +20,6 @@ export function signIn() {
 }
 
 export function signOut() {
-  // After clearing the SWA session, redirect to AAD login with account picker
-  // so the user explicitly chooses their account rather than being silently re-authed
-  const loginWithPicker = encodeURIComponent('/.auth/login/aad?prompt=select_account')
-  window.location.href = `/.auth/logout?post_logout_redirect_uri=${loginWithPicker}`
+  // Return to app root after logout — the app will show the login screen
+  window.location.href = '/.auth/logout?post_logout_redirect_uri=/'
 }
