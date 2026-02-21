@@ -1,19 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
-import { createErrorResponse, createSuccessResponse } from '../lib/azuresql'
+import { getPool, createErrorResponse, createSuccessResponse } from '../lib/azuresql'
 import { requireAuth } from '../lib/auth'
 import sql from 'mssql'
-
-async function getPool() {
-  const config: sql.config = {
-    server: (process.env.AZURE_SQL_SERVER || '').trim(),
-    database: (process.env.AZURE_SQL_DATABASE || '').trim(),
-    user: (process.env.AZURE_SQL_USER || '').trim(),
-    password: (process.env.AZURE_SQL_PASSWORD || '').trim(),
-    options: { encrypt: true, trustServerCertificate: true, connectTimeout: 300000, requestTimeout: 300000 },
-    pool: { max: 10, min: 0, idleTimeoutMillis: 30000 },
-  }
-  return sql.connect(config)
-}
 
 app.http('user-search-history', {
   methods: ['GET', 'POST'],

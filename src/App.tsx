@@ -45,7 +45,20 @@ function AppContent() {
 
       setUser(principal);
 
+      // Log principal for diagnostics (safe — no sensitive data beyond email)
+      console.log('[Auth] Principal received:', {
+        identityProvider: principal.identityProvider,
+        userId: principal.userId,
+        userDetails: principal.userDetails,
+        userRoles: principal.userRoles,
+      });
+
       // Create/update user profile in Azure SQL on login
+      if (!principal.userDetails) {
+        console.warn('[Auth] userDetails (email) is missing from principal — skipping profile upsert. Check /.auth/me response.');
+        return;
+      }
+
       upsertUserProfile(principal.userId, principal.userDetails, undefined)
         .catch((err) => console.error('[Auth] Failed to create/update user profile:', err));
     });
@@ -53,18 +66,32 @@ function AppContent() {
 
   // Check database connection once on app startup
   useEffect(() => {
-    const checkDbConnection = async () => {
+    let cancelled = false;
+    let attempts = 0;
+    const MAX_ATTEMPTS = 24;    // 24 × 10s = 4 minutes max
+    const POLL_INTERVAL_MS = 10000;
+
+    const poll = async () => {
+      if (cancelled) return;
       try {
         await testConnection();
-        setDbConnectionStatus('connected');
-      } catch (error) {
-        setDbConnectionStatus('error');
-        setDbErrorMessage(error instanceof Error ? error.message : 'Failed to connect to database');
+        if (!cancelled) setDbConnectionStatus('connected');
+      } catch {
+        attempts++;
+        if (attempts >= MAX_ATTEMPTS) {
+          if (!cancelled) {
+            setDbConnectionStatus('error');
+            setDbErrorMessage('Database unavailable after extended wait. Please refresh the page.');
+          }
+          return;
+        }
+        if (!cancelled) setTimeout(poll, POLL_INTERVAL_MS);
       }
     };
 
-    checkDbConnection();
-  }, []); // Empty dependency array - only runs once on mount
+    poll();
+    return () => { cancelled = true; };
+  }, []);
 
   // Handle loading cart items from navigation state (for edit functionality)
   useEffect(() => {

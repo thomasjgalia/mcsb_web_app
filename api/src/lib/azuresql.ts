@@ -45,7 +45,7 @@ async function connectWithRetry(config: sql.config): Promise<sql.ConnectionPool>
 /**
  * Get or create Azure SQL connection pool
  */
-async function getPool(): Promise<sql.ConnectionPool> {
+export async function getPool(): Promise<sql.ConnectionPool> {
   if (pool && pool.connected) {
     return pool;
   }
@@ -58,7 +58,7 @@ async function getPool(): Promise<sql.ConnectionPool> {
     options: {
       encrypt: true, // Required for Azure
       trustServerCertificate: true, // Required for Azure SQL with mssql library
-      connectTimeout: 300000, // 5 minutes to allow for Azure SQL auto-resume from pause
+      connectTimeout: 15000, // 15 seconds — fail fast so frontend polling can retry
       requestTimeout: 300000, // 5 minutes for query execution
       // Match SSMS default SET options to use cached execution plans
       // This is critical for performance - different SET options cause plan recompilation

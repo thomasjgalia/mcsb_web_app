@@ -76,7 +76,7 @@ export const testConnection = async (): Promise<{
 }> => {
   try {
     const response = await apiClient.get('/api/health', {
-      timeout: 300000, // 5 minutes (300 seconds) for initial cold start
+      timeout: 20000, // 20 seconds — backend fails fast, frontend polls on retry
     });
     return response.data;
   } catch (error) {
