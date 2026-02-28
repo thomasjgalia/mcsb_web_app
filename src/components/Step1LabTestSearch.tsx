@@ -10,7 +10,7 @@ import systemRollup from '../../SQL_Files/lab_attribute_rollups/rollup_system.js
 import termSuggestions from '../../SQL_Files/termsuggest.json';
 // Note: timeRollup not needed - API already does time rollup transformation
 
-type SortField = 'search_result' | 'vocabulary_id' | 'searched_concept_class_id' | 'scale' | 'system' | 'time' | 'panel_count';
+type SortField = 'search_result' | 'vocabulary_id' | 'searched_concept_class_id' | 'scale' | 'system' | 'time';
 type SortDirection = 'asc' | 'desc';
 
 interface Step1LabTestSearchProps {
@@ -19,7 +19,6 @@ interface Step1LabTestSearchProps {
   addMultipleToCart: (items: CartItem[]) => void;
   removeMultipleFromCart: (conceptIds: number[]) => void;
   shoppingCart: CartItem[];
-  goToPanelStep?: () => void; // Optional: Navigate to Step 2 (Panel Search)
 }
 
 export default function Step1LabTestSearch({
@@ -28,7 +27,6 @@ export default function Step1LabTestSearch({
   addMultipleToCart,
   removeMultipleFromCart,
   shoppingCart,
-  goToPanelStep,
 }: Step1LabTestSearchProps) {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
@@ -743,16 +741,6 @@ export default function Step1LabTestSearch({
                 {shoppingCart.length > 0 && (
                   <>
                     <span className="text-gray-300">|</span>
-                    {goToPanelStep && (
-                      <button
-                        onClick={goToPanelStep}
-                        className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-1.5 text-xs px-3 py-1.5 rounded transition-colors"
-                      >
-                        <ShoppingCart className="w-3 h-3" />
-                        Add Panels
-                      </button>
-                    )}
-                    {goToPanelStep && <span className="text-gray-300">|</span>}
                     <button
                       onClick={() => navigate('/codeset')}
                       className="btn-primary flex items-center gap-1.5 text-xs px-3 py-1.5"
@@ -788,10 +776,7 @@ export default function Step1LabTestSearch({
                     <th className="w-[12%] text-xs py-2 cursor-pointer hover:bg-gray-50" onClick={() => handleSort('time')}>
                       Time {getSortIcon('time')}
                     </th>
-                    <th className="w-[6%] text-xs py-2 cursor-pointer hover:bg-gray-50" onClick={() => handleSort('panel_count')}>
-                      In Panels {getSortIcon('panel_count')}
-                    </th>
-                    <th className="w-[5%] text-xs py-2">Action</th>
+                    <th className="w-[11%] text-xs py-2">Action</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -829,15 +814,6 @@ export default function Step1LabTestSearch({
                       </td>
                       <td className="py-2 px-1 text-xs text-gray-600">
                         <div className="truncate" title={result.time || undefined}>{result.time || '-'}</div>
-                      </td>
-                      <td className="py-2 px-2 text-center">
-                        {result.panel_count > 0 ? (
-                          <span className="inline-flex items-center justify-center bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">
-                            {result.panel_count}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
                       </td>
                       <td className="py-2 px-2">
                         <button

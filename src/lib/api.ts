@@ -17,7 +17,6 @@ import type {
   SearchHistoryRecord,
   LabTestSearchRequest,
   LabTestSearchResult,
-  LabTestPanelSearchResult,
 } from './types';
 
 // In development with Vercel Dev, API routes are served on the same origin
@@ -120,28 +119,6 @@ export const searchLabTests = async (
 
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.error || 'Lab test search failed');
-    }
-
-    return response.data.data;
-  } catch (error) {
-    return handleApiError(error);
-  }
-};
-
-// ============================================================================
-// Lab Test Panel Search
-// ============================================================================
-export const searchLabTestPanels = async (
-  labTestConceptIds: number[]
-): Promise<LabTestPanelSearchResult[]> => {
-  try {
-    const response = await apiClient.post<ApiResponse<LabTestPanelSearchResult[]>>(
-      '/api/labtest-panel-search',
-      { labTestConceptIds }
-    );
-
-    if (!response.data.success || !response.data.data) {
-      throw new Error(response.data.error || 'Lab test panel search failed');
     }
 
     return response.data.data;

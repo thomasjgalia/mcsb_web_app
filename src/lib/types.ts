@@ -12,7 +12,7 @@ export type WorkflowType = 'direct' | 'hierarchical' | 'labtest';
 export type ComboFilter = 'ALL' | 'SINGLE' | 'COMBINATION';
 
 // Lab Test Type filter
-export type LabTestType = 'ALL' | 'Lab Test' | 'Panel';
+export type LabTestType = 'ALL' | 'Lab Test';
 
 // ============================================================================
 // Step 1: Search Results
@@ -46,29 +46,13 @@ export interface LabTestSearchResult {
   searched_code: string;            // Concept Code
   searched_concept_class_id: string; // Concept Class
   vocabulary_id: string;            // LOINC, CPT4, HCPCS, SNOMED
-  property: string | null;          // What's being measured (aggregated)
-  scale: string | null;             // Quantitative, Ordinal, etc. (aggregated)
-  system: string | null;            // Blood, Urine, etc. (aggregated)
-  time: string | null;              // Point in time, 24h, etc. (aggregated)
-  panel_count: number;              // Number of panels containing this lab test
+  scale: string | null;             // Quantitative, Ordinal, etc.
+  system: string | null;            // Blood, Urine, etc.
+  time: string | null;              // Point in time, 24h, etc.
 }
 
 export interface LabTestSearchRequest {
   searchterm: string;
-}
-
-export interface LabTestPanelSearchResult {
-  lab_test_type: string;            // 'Panel'
-  std_concept_id: number;           // The lab test concept ID from shopping cart
-  panel_concept_id: number;         // Panel CONCEPT_ID
-  search_result: string;            // Panel Name
-  searched_code: string;            // Panel Code
-  searched_concept_class_id: string; // Concept Class
-  vocabulary_id: string;            // Vocabulary (typically LOINC)
-  property: null;
-  scale: null;
-  system: null;
-  time: null;
 }
 
 // ============================================================================

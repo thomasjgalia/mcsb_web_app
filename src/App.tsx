@@ -10,7 +10,6 @@ import ShoppingCart from './components/ShoppingCart';
 import Landing from './components/Landing';
 import Step1Search from './components/Step1Search';
 import Step1LabTestSearch from './components/Step1LabTestSearch';
-import Step2PanelSearch from './components/Step2PanelSearch';
 import Step2Hierarchy from './components/Step2Hierarchy';
 import Step3CodeSet from './components/Step3CodeSet';
 import SavedCodeSets from './components/SavedCodeSets';
@@ -25,7 +24,6 @@ function AppContent() {
   const [dbErrorMessage, setDbErrorMessage] = useState<string>('');
   const [workflow, setWorkflow] = useState<'direct' | 'hierarchical' | 'labtest' | null>(null);
   const [currentStep, setCurrentStep] = useState<0 | 1 | 2 | 3>(0);
-  const [labtestStep, setLabtestStep] = useState<1 | 2>(1); // Lab Test workflow: 1 = Lab Tests, 2 = Panels
   const [shoppingCart, setShoppingCart] = useState<CartItem[]>([]);
   const [selectedConcept, setSelectedConcept] = useState<SearchResult | null>(null);
   const [selectedDomain, setSelectedDomain] = useState<DomainType | null>(null);
@@ -134,7 +132,6 @@ function AppContent() {
   const handleWorkflowSelected = (selectedWorkflow: 'direct' | 'hierarchical' | 'labtest') => {
     setWorkflow(selectedWorkflow);
     setCurrentStep(1);
-    setLabtestStep(1); // Reset to Step 1 for Lab Test workflow
     navigate('/search');
   };
 
@@ -267,30 +264,17 @@ function AppContent() {
                     workflow === null ? (
                       <Navigate to="/" replace />
                     ) : workflow === 'labtest' ? (
-                      <>
-                        <div style={{ display: labtestStep === 1 ? 'block' : 'none' }}>
-                          <Step1LabTestSearch
-                            addToCart={addToCart}
-                            removeFromCart={removeFromCart}
-                            addMultipleToCart={(items) => {
-                              const existingIds = new Set(shoppingCart.map(item => item.hierarchy_concept_id));
-                              const newItems = items.filter(item => !existingIds.has(item.hierarchy_concept_id));
-                              setShoppingCart([...shoppingCart, ...newItems]);
-                            }}
-                            removeMultipleFromCart={removeMultipleFromCart}
-                            shoppingCart={shoppingCart}
-                            goToPanelStep={() => setLabtestStep(2)}
-                          />
-                        </div>
-                        <div style={{ display: labtestStep === 2 ? 'block' : 'none' }}>
-                          <Step2PanelSearch
-                            addToCart={addToCart}
-                            removeFromCart={removeFromCart}
-                            shoppingCart={shoppingCart}
-                            goToLabTestStep={() => setLabtestStep(1)}
-                          />
-                        </div>
-                      </>
+                      <Step1LabTestSearch
+                        addToCart={addToCart}
+                        removeFromCart={removeFromCart}
+                        addMultipleToCart={(items) => {
+                          const existingIds = new Set(shoppingCart.map(item => item.hierarchy_concept_id));
+                          const newItems = items.filter(item => !existingIds.has(item.hierarchy_concept_id));
+                          setShoppingCart([...shoppingCart, ...newItems]);
+                        }}
+                        removeMultipleFromCart={removeMultipleFromCart}
+                        shoppingCart={shoppingCart}
+                      />
                     ) : (
                       <Step1Search
                         onConceptSelected={handleConceptSelected}

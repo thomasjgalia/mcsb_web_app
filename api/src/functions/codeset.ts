@@ -19,8 +19,6 @@ interface CodeSetResult {
   dfg_name?: string
   concept_attribute?: string
   value?: string
-  relationships_json?: string | null
-  relationships?: Array<{ relationship_id: string; value_name: string }>
 }
 
 function deduplicateResults(results: CodeSetResult[]): CodeSetResult[] {
@@ -55,11 +53,7 @@ app.http('codeset', {
           {},
           { name: 'ConceptIds', typeName: 'dbo.ConceptIdList', rows: tvpRows }
         )
-        const parsedResults = results.map(r => ({
-          ...r,
-          relationships: r.relationships_json ? JSON.parse(r.relationships_json) : [],
-        }))
-        allResults.push(...parsedResults)
+        allResults.push(...results)
         console.log(`✅ Lab Test Build: Completed in ${Date.now() - startTime}ms - ${results.length} results`)
         const deduped = deduplicateResults(allResults)
         return { jsonBody: { success: true, data: deduped } }
