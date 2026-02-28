@@ -47,7 +47,15 @@ async function connectWithRetry(config: sql.config): Promise<sql.ConnectionPool>
  */
 export async function getPool(): Promise<sql.ConnectionPool> {
   if (pool && pool.connected) {
-    return pool;
+    // Verify the pool is actually alive with a lightweight probe
+    try {
+      await pool.request().query('SELECT 1');
+      return pool;
+    } catch {
+      console.log('⚠️  Connection pool is stale, recreating...');
+      try { await pool.close(); } catch { /* ignore close errors */ }
+      pool = null;
+    }
   }
 
   const config: sql.config = {
